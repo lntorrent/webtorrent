@@ -1,35 +1,35 @@
-const finalhandler = require('finalhandler')
-const fixtures = require('webtorrent-fixtures')
-const http = require('http')
-const path = require('path')
-const MemoryChunkStore = require('memory-chunk-store')
-const series = require('run-series')
-const serveStatic = require('serve-static')
-const test = require('tape')
-const WebTorrent = require('../../')
+import http from 'http'
+import path from 'path'
+import finalhandler from 'finalhandler'
+import fixtures from 'webtorrent-fixtures'
+import MemoryChunkStore from 'memory-chunk-store'
+import series from 'run-series'
+import serveStatic from 'serve-static'
+import test from 'tape'
+import WebTorrent from '../../index.js'
 
-test('Download using webseed (via magnet uri)', function (t) {
-  t.plan(9)
+test('Download using webseed (via magnet uri)', t => {
+  t.plan(8)
 
   const serve = serveStatic(path.dirname(fixtures.leaves.contentPath))
-  const httpServer = http.createServer(function (req, res) {
+  const httpServer = http.createServer((req, res) => {
     const done = finalhandler(req, res)
     serve(req, res, done)
   })
   let client1, client2
 
-  httpServer.on('error', function (err) { t.fail(err) })
+  httpServer.on('error', err => { t.fail(err) })
 
   series([
-    function (cb) {
+    cb => {
       httpServer.listen(cb)
     },
 
-    function (cb) {
-      client1 = new WebTorrent({ dht: false, tracker: false, lsd: false })
+    cb => {
+      client1 = new WebTorrent({ dht: false, tracker: false, lsd: false, natUpnp: false, natPmp: false })
 
-      client1.on('error', function (err) { t.fail(err) })
-      client1.on('warning', function (err) { t.fail(err) })
+      client1.on('error', err => { t.fail(err) })
+      client1.on('warning', err => { t.fail(err) })
 
       let gotTorrent = false
       let gotListening = false
@@ -37,7 +37,7 @@ test('Download using webseed (via magnet uri)', function (t) {
         if (gotTorrent && gotListening) cb(null)
       }
 
-      client1.on('torrent', function (torrent) {
+      client1.on('torrent', torrent => {
         // torrent metadata has been fetched -- sanity check it
         t.equal(torrent.name, 'Leaves of Grass by Walt Whitman.epub')
 
@@ -45,7 +45,7 @@ test('Download using webseed (via magnet uri)', function (t) {
           'Leaves of Grass by Walt Whitman.epub'
         ]
 
-        t.deepEqual(torrent.files.map(function (file) { return file.name }), names)
+        t.deepEqual(torrent.files.map(file => file.name), names)
 
         // NOTE: client1 is *NOT* a seeder. Just has the metadata.
         gotTorrent = true
@@ -54,60 +54,63 @@ test('Download using webseed (via magnet uri)', function (t) {
 
       const torrent = client1.add(fixtures.leaves.parsedTorrent, { store: MemoryChunkStore })
 
-      torrent.on('infoHash', function () {
+      torrent.on('infoHash', () => {
         gotListening = true
         maybeDone()
       })
     },
 
-    function (cb) {
-      client2 = new WebTorrent({ dht: false, tracker: false, lsd: false })
+    cb => {
+      client2 = new WebTorrent({ dht: false, tracker: false, lsd: false, natUpnp: false, natPmp: false })
 
-      client2.on('error', function (err) { t.fail(err) })
-      client2.on('warning', function (err) { t.fail(err) })
+      client2.on('error', err => { t.fail(err) })
+      client2.on('warning', err => { t.fail(err) })
 
-      const webSeedUrl = 'http://localhost:' + httpServer.address().port + '/' + fixtures.leaves.parsedTorrent.name
-      const magnetURI = fixtures.leaves.magnetURI + '&ws=' + encodeURIComponent(webSeedUrl)
+      const webSeedUrl = `http://localhost:${httpServer.address().port}/${fixtures.leaves.parsedTorrent.name}`
+      const magnetURI = `${fixtures.leaves.magnetURI}&ws=${encodeURIComponent(webSeedUrl)}`
 
-      client2.on('torrent', function (torrent) {
+      client2.on('torrent', async torrent => {
         let gotBuffer = false
         let torrentDone = false
+        function maybeDone () {
+          if (gotBuffer && torrentDone) cb(null)
+        }
 
-        torrent.files.forEach(function (file) {
-          file.getBuffer(function (err, buf) {
-            t.error(err)
-            t.deepEqual(buf, fixtures.leaves.content, 'downloaded correct content')
-            gotBuffer = true
-            maybeDone()
-          })
-        })
-
-        torrent.once('done', function () {
+        torrent.once('done', () => {
           t.pass('client2 downloaded torrent from client1')
           torrentDone = true
           maybeDone()
         })
 
-        function maybeDone () {
-          if (gotBuffer && torrentDone) cb(null)
+        for (const file of torrent.files) {
+          try {
+            const ab = await file.arrayBuffer()
+            t.deepEqual(new Uint8Array(ab), new Uint8Array(fixtures.leaves.content), 'downloaded correct content')
+          } catch (err) {
+            t.error(err)
+          }
+
+          gotBuffer = true
+          maybeDone()
         }
       })
 
       const torrent = client2.add(magnetURI, { store: MemoryChunkStore })
 
-      torrent.on('infoHash', function () {
-        torrent.addPeer('127.0.0.1:' + client1.address().port)
+      torrent.on('infoHash', () => {
+        torrent.addPeer(`127.0.0.1:${client1.address().port}`)
       })
     }
-  ], function (err) {
+  ], err => {
     t.error(err)
-    client1.destroy(function (err) {
+    client1.destroy(err => {
       t.error(err, 'client destroyed')
     })
-    client2.destroy(function (err) {
+    client2.destroy(err => {
       t.error(err, 'client destroyed')
     })
-    httpServer.close(function () {
+    httpServer.closeAllConnections?.()
+    httpServer.close(() => {
       t.pass('http server closed')
     })
   })

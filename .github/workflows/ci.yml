@@ -1,7 +1,16 @@
 name: ci
-'on':
-  - push
-  - pull_request
+on:
+  push:
+    branches:
+      - master
+    tags-ignore:
+      - '*'
+  pull_request:
+    branches:
+      - master
+concurrency: 
+  group: ${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   test:
     name: Node ${{ matrix.node }} / ${{ matrix.os }}
@@ -12,16 +21,35 @@ jobs:
         os:
           - ubuntu-latest
         node:
-          - '14'
+          - '24'
+          - '22'
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
-          node-version: ${{ runner.node }}
+          node-version: ${{ matrix.node }}
       - run: npm install
-      - run: npm run build --if-present
-      - run: sudo sh -c "echo '127.0.0.1 airtap.local' >> /etc/hosts"
-      - run: npm test
+      - run: echo "127.0.0.1 airtap.local" | sudo tee -a /etc/hosts
+      - run: npm run lint
+      - run: npm run test-node
+  test-browser:
+    name: Browser
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+        node:
+          - '24'
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - run: npm install
+      - run: npm run build
+      - run: npm run test-browser
         env:
           SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
           SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}

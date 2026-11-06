@@ -59,6 +59,7 @@ There are also exciting **business use cases**, from CDNs to app delivery.
 WebTorrent is still pretty new, but it's already being used in cool ways:
 
 - **[WebTorrent Desktop][webtorrent-desktop]** - Streaming torrent app. For Mac, Windows, and Linux. ([source code][webtorrent-desktop-source])
+- **[Wormhole][wormhole]** – Simple, private file sharing (built by the WebTorrent team)
 - **[Instant.io][instant.io]** – Streaming file transfer over WebTorrent ([source code][instant.io-source])
 - **[GitTorrent][gittorrent]** - Decentralized GitHub using BitTorrent and Bitcoin ([source code][gittorrent-source])
 - **[File.pizza][filepizza]** - Free peer-to-peer file transfers in your browser ([source code][filepizza-source])
@@ -69,8 +70,6 @@ WebTorrent is still pretty new, but it's already being used in cool ways:
 - **[PeerWeb][peerweb]** - Fetch and render a static website from a torrent
 - **[YouShark][youshark]** - Web music player for WebTorrent ([source code][youshark-source])
 - **[Twister][twister]** - Decentralized microblogging service, using WebTorrent for media attachments ([source code][twister-source])
-- **[PeerTube][peertube]** - Prototype of a decentralized video streaming platform in the web browser ([source code][peertube-source])
-- **[Cinematrix][cinematrix]** - Stream your favorite free content
 - **[webtorrent-cljs][webtorrent-cljs]** - Clojurescript wrapper for WebTorrent
 - **[Squidlink][squidlink]** - Transfer files from A to B without the Cloud ([source code][squidlink-source])
 - **[Web2web][web2web]** - Server-less & domain-less websites updatable via torrents and bitcoin blockchain ([source code][web2web-source])
@@ -79,7 +78,6 @@ WebTorrent is still pretty new, but it's already being used in cool ways:
 - **[TorrentMedia][torrentmedia]** - Fully-featured desktop WebTorrent client
 - **[Gaia 3D Star Map][gaia]** - 2 million stars, rendered in 3D with WebGL, WebVR, and WebTorrent
 - **[Watchtor][watchtor]** - A minimalistic approach for online torrent watching ([source code][watchtor-source])
-- **[DropClickPaste][dropclickpaste]** - Drop Dead Simple Content Sharing
 - **[FileMap][filemap]** - Share files by pinning them to geographic locations
 - **[WebTorrent Google Cast (WTGC)][wtgc]** - Play WebTorrent media on Google Cast devices ([source code][wtgc-source])
 - **[CodeDump][codedump]** - A WebTorrent based code pastebin ([source code][codedump-source])
@@ -99,11 +97,25 @@ WebTorrent is still pretty new, but it's already being used in cool ways:
 - **[Bugout][Bugout]** - build and run back-end web services in a browser tab.
 - **[P2P Media Loader][p2p-media-loader]** - engine for Hls.js and Shaka Player that enables P2P sharing of live and VOD streams over HLS or DASH protocols.
 - **[Hubzilla][hubzilla]** - WebTorrent player integration into posts ([source code][hubzilla-source])
-- **[Come Over][comeover]** - Video stream sharing to watch movies together.
-- **[PeerWebSite][peerwebsite]** - Peer to Peer Web Site hosting at your fingertips! Send full featured HTML (incl. CSS, JS) sites from your browser and attach files eg. videos, images, etc.
+- **[Come Over][comeover]** - Video stream sharing to watch movies together ([source code][comeover-source])
+- **[decentral.ninja][DCN]** - WEB3.0 Chat to communicate anonymously through decentralized networks. Using CRDTs (offline-first PWA), Websocket, WebRTC, WebTorrent, IPFS and all fully end-to-end encrypted.
 - **[CipherTorrent][cipher-torrent]** - Online and offline browser torrent client ([source code][cipher-torrent-source])
 - **[Slingcode][Slingcode]** - make, run, and share web apps P2P in the browser.
 - **[Torrent🧲Parts][TorrentParts]** - A website to inspect and edit what's in your Torrent file or Magnet link
+- **[Live On Torrent][liveontorrent]** - A free plataform to live streaming on browser.
+- **[WebTorrentPlayer][webtorrentplayer]** - High performance, no compromise video player for WebTorrent ([source code][webtorrentplayer-source])
+- **[Storm][storm]** - A beautiful torrent client for desktop.
+- **[atorable-loader][atorable-loader-source]** - Resolves Webpack import/require() of a file into a Webtorrent magnet uri.
+- **[atorable-react][atorable-react]** -  React component that processes a Webtorrent magnet uri for viewing or other custom uses. ([source code][atorable-react-source])
+- **[Iris][iris-messenger]** - Decentralized social networking application. ([source code][iris-messenger-source])
+- **[Miru][miru-source]** - Stream anime torrents, real-time with no waiting for downloads. ([source code][miru-source])
+- **[Haven Torrent Client][haven-torrent-client]** - Simple and Fast Torrent Client for the web. ([source code][haven-torrent-client-source])
+- **[CrawFish][CrawFish]** - Desktop/Web/Server torrent client, with streaming support and integrated search (Works in docker, windows and has a WebUI that can be accessed by remote). ([source code][CrawFish-source])
+- **[Niwder][Niwder]** - Web based platform to transfer torrents to Mega.nz and Google Drive on the cloud. ([source code][Niwder-source])
+- **[Chitchatter][Chitchatter]** - A peer-to-peer chat app that is serverless, decentralized, and ephemeral. Uses WebTorrent to initiate peer connections. ([source code][Chitchatter-source])
+- **[P2PFileShare][P2PFileShare]** - A peer-to-peer file-sharing app that allows users to send and receive files directly from your browser.
+- **[anacrolix/torrent library][anacrolix-torrent-source]** - A full-featured BitTorrent Golang client package. Some popular torrent clients built with it, such as [distribyted][distribyted-source] and [confluence][confluence-source], enable WebTorrent support by default.
+- **[libtorrent library][libtorrent]** has experimental (disabled by default) support for WebTorrent ([tracking][libtorrent-tracking-pr]).
 - ***Your app here – [Send a pull request][pr] with your URL!***
 <!-- - **[PeerCloud][peercloud]** - Serverless websites via WebTorrent ([source code][peercloud-source]) -->
 <!-- - **[Niagara][niagara]** - Video player webtorrent with subtitles (zipped .srt(s)) -->
@@ -116,6 +128,7 @@ There's also a list of WebTorrent-powered alternatives to centralized services h
 [webtorrent-clones]: https://github.com/DiegoRBaquero/awesome-webtorrent-clones
 [webtorrent-desktop]: https://webtorrent.io/desktop
 [webtorrent-desktop-source]: https://github.com/webtorrent/webtorrent-desktop
+[wormhole]: https://wormhole.app
 [instant.io-source]: https://github.com/webtorrent/instant.io
 [gittorrent]: http://blog.printf.net/articles/2015/05/29/announcing-gittorrent-a-decentralized-github/
 [gittorrent-source]: https://github.com/cjb/GitTorrent
@@ -137,9 +150,6 @@ There's also a list of WebTorrent-powered alternatives to centralized services h
 [youshark-source]: https://github.com/enorrmann/youshark
 [twister]: http://twister.net.co/?p=589
 [twister-source]: https://github.com/miguelfreitas/twister-html
-[peertube]: http://peertube.cpy.re
-[peertube-source]: https://github.com/Chocobozzz/PeerTube
-[cinematrix]: http://cinematrix.one/
 [webtorrent-cljs]: https://github.com/cvillecsteele/webtorrent-cljs
 [squidlink]: http://squidl.ink
 [squidlink-source]: https://github.com/darkenvy/Squidl.ink
@@ -153,10 +163,9 @@ There's also a list of WebTorrent-powered alternatives to centralized services h
 [gaia]: http://charliehoey.com/threejs-demos/gaia_dr1.html
 [watchtor]: https://open-watchtor.hashbase.io
 [watchtor-source]: https://github.com/codealchemist/watchtor
-[dropclickpaste]: http://dropclickpaste.com/
 [filemap]: https://filemap.xyz
 [wtgc]: https://wtgc.firebaseapp.com
-[wtgc-source]: https://git.io/wtgc
+[wtgc-source]: https://github.com/FluorescentHallucinogen/webtorrent-googlecast
 [codedump]: http://ronsoros.github.io
 [codedump-source]: https://github.com/ronsoros/ronsoros.github.io/blob/master/index.html
 [lunik-torrent]: https://tcloud-lunik.herokuapp.com
@@ -180,11 +189,36 @@ There's also a list of WebTorrent-powered alternatives to centralized services h
 [p2p-media-loader]: https://github.com/novage/p2p-media-loader
 [hubzilla]: https://hubzilla.org
 [hubzilla-source]: https://github.com/demitas-ace/wtplayer/tree/master/wtplayer
-[comeover]: https://www.comeover.io
-[peerwebsite]: https://peerweb.site
+[comeover]: https://luccadoret.github.io/comeover/home
+[comeover-source]: https://github.com/LucCADORET/comeover
+[DCN]: https://decentral.ninja
 [cipher-torrent]: https://torrent.cipherdogs.net
 [cipher-torrent-source]: https://github.com/CipherDogs/cipher-torrent
 [TorrentParts]: https://torrent.parts
+[liveontorrent]: https://www.weboscoder.com/liveontorrent/
+[webtorrentplayer]: https://thaunknown.github.io/webtorrent-player/
+[webtorrentplayer-source]: https://github.com/ThaUnknown/webtorrent-player
+[storm]: https://github.com/nuzzesick/storm-desktop
+[atorable-loader-source]: https://github.com/Atorable/atorable-loader
+[atorable-react]: https://atorable.github.io/atorable-react/
+[atorable-react-source]: https://github.com/Atorable/atorable-react
+[iris-messenger]: https://iris.to
+[iris-messenger-source]: https://github.com/irislib/iris-messenger
+[CrawFish]: https://github.com/drakonkat/crawfish/blob/main/README.md
+[CrawFish-source]: https://github.com/drakonkat/crawfish
+[miru-source]: https://github.com/ThaUnknown/miru
+[haven-torrent-client]: https://haven.pages.dev/torrent-client/public/
+[haven-torrent-client-source]: https://github.com/ThaUnknown/pwa-haven/tree/main/torrent-client
+[Niwder]: https://niwder.niweera.gq
+[Niwder-source]: https://github.com/Niweera/niwder
+[Chitchatter]: https://chitchatter.im/
+[Chitchatter-source]: https://github.com/jeremyckahn/chitchatter
+[P2PFileShare]: https://p2pfileshare.com
+[anacrolix-torrent-source]: https://github.com/anacrolix/torrent
+[distribyted-source]: https://github.com/distribyted/distribyted
+[confluence-source]: https://github.com/anacrolix/confluence
+[libtorrent]: https://libtorrent.org/
+[libtorrent-tracking-pr]: https://github.com/arvidn/libtorrent/pull/4123
 
 ## How does WebTorrent work?
 
@@ -219,22 +253,26 @@ clients like Transmission, and uTorrent to add support for WebTorrent. **Vuze**
 
 To start using WebTorrent, simply include the
 [`webtorrent.min.js`](https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js)
-script on your page. If you use [browserify](http://browserify.org/), you can
-`npm install webtorrent` and `require('webtorrent')`.
+script on your page. If you use [browserify](http://browserify.org/) or [webpack](https://webpack.js.org/), you can
+`npm install webtorrent` and `import WebTorrent from 'webtorrent'`.
 
 It's easy to download a torrent and add it to the page.
 
 ```js
-var client = new WebTorrent()
+const client = new WebTorrent()
 
-var torrentId = 'magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent'
+const torrentId = 'magnet:?xt=urn:btih:08ada5a7a6183aae1e09d831df6748d566095a10&dn=Sintel&tr=udp%3A%2F%2Fexplodie.org%3A6969&tr=udp%3A%2F%2Ftracker.coppersurfer.tk%3A6969&tr=udp%3A%2F%2Ftracker.empire-js.us%3A1337&tr=udp%3A%2F%2Ftracker.leechers-paradise.org%3A6969&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=wss%3A%2F%2Ftracker.btorrent.xyz&tr=wss%3A%2F%2Ftracker.fastcast.nz&tr=wss%3A%2F%2Ftracker.openwebtorrent.com&ws=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2F&xs=https%3A%2F%2Fwebtorrent.io%2Ftorrents%2Fsintel.torrent'
 
-client.add(torrentId, function (torrent) {
+const controller = await navigator.serviceWorker.register('./sw.min.js', { scope: './' })
+await navigator.serviceWorker.ready
+client.createServer({ controller })
+
+client.add(torrentId, torrent => {
   // Torrents can contain many files. Let's use the .mp4 file
-  var file = torrent.files.find(function (file) {
+  const file = torrent.files.find(file => {
     return file.name.endsWith('.mp4')
   })
-  file.appendTo('body') // append the file to the DOM
+  file.streamTo(document.querySelector('video')) // append the file to the DOM
 })
 ```
 

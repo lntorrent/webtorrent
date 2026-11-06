@@ -11,14 +11,14 @@
 
 <p align="center">
   <a href="https://discord.gg/cnXkm4Z"><img src="https://img.shields.io/discord/612575111718895616" alt="discord"></a>
-  <a href="https://github.com/webtorrent/webtorrent"><img src="https://img.shields.io/github/workflow/status/webtorrent/webtorrent/ci/master" alt="ci"></a>/actions
+  <a href="https://github.com/webtorrent/webtorrent/actions"><img src="https://img.shields.io/github/actions/workflow/status/webtorrent/webtorrent/ci.yml?branch=master" alt="ci"></a>
   <a href="https://www.npmjs.com/package/webtorrent"><img src="https://img.shields.io/npm/v/webtorrent.svg" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/webtorrent"><img src="https://img.shields.io/npm/dm/webtorrent.svg" alt="npm downloads"></a>
   <a href="https://standardjs.com"><img src="https://img.shields.io/badge/code_style-standard-brightgreen.svg" alt="Standard - JavaScript Style Guide"></a>
 </p>
 
 <h5 align="center">
-  Sponsored by&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://brave.com" rel="nofollow"><img src="https://webtorrent.io/img/supporters/brave.png" alt="Brave" height=35 valign="middle"></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://webtorrent.io/expressvpn" rel="nofollow"><img src="https://webtorrent.io/img/supporters/expressvpn.png" alt="ExpressVPN" height=30 valign="middle"></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.enya.ai/?utm_source=github_webtorrent&utm_medium=web" rel="nofollow"><img src="https://webtorrent.io/img/supporters/enya.png" alt="Enya" height=30 valign="middle"></a>
+  Sponsored by&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://socket.dev"><img src="https://webtorrent.io/img/supporters/socket.png" alt="Socket - JavaScript open source supply chain security" height=35 valign="middle"></a>&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://www.wormhole.app/?utm_medium=sponsorship&utm_source=webtorrent&utm_campaign=feross"><img src="https://webtorrent.io/img/supporters/wormhole.png" alt="Wormhole" height=30 valign="middle"></a>
 </h5>
 <br>
 
@@ -31,12 +31,12 @@ other torrent clients.
 
 In the browser, WebTorrent uses **WebRTC** (data channels) for peer-to-peer transport.
 It can be used **without** browser plugins, extensions, or installations. It's Just
-JavaScript&trade;. Note: WebTorrent does **not** support UDP/TCP peers in browser.
+JavaScript™. Note: WebTorrent does **not** support UDP/TCP peers in browser.
 
 Simply include the
 [`webtorrent.min.js`](https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js) script
 on your page to start fetching files over WebRTC using the BitTorrent protocol, or
-`require('webtorrent')` with [browserify](http://browserify.org/). See [demo apps
+`import WebTorrent from 'webtorrent'` with [browserify](http://browserify.org/) or [webpack](https://webpack.js.org/). See [demo apps
 ](#who-is-using-webtorrent-today) and [code examples](#usage) below.
 
 [![jsdelivr download count](https://data.jsdelivr.com/v1/package/npm/webtorrent/badge)](https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js)
@@ -69,28 +69,29 @@ they can connect to both normal *and* web peers. We hope other clients will foll
   - **peer discovery** via **[dht](https://github.com/webtorrent/bittorrent-dht)**,
     **[tracker](https://github.com/webtorrent/bittorrent-tracker)**,
     **[lsd](https://github.com/webtorrent/bittorrent-lsd)**, and
-    **[ut_pex](https://github.com/fisch0920/ut_pex)**
+    **[ut_pex](https://github.com/webtorrent/ut_pex)**
   - **[protocol extension api](https://github.com/webtorrent/bittorrent-protocol#extension-api)**
     for adding new extensions
 - **Comprehensive test suite** (runs completely offline, so it's reliable and fast)
+- Check all the **[supported BEPs here](docs/bep_support.md)**
 
 #### Browser/WebRTC environment features
 
 - **WebRTC data channels** for lightweight peer-to-peer communication with **no plugins**
 - **No silos.** WebTorrent is a P2P network for the **entire web.** WebTorrent clients
   running on one domain can connect to clients on any other domain.
-- Stream video torrents into a `<video>` tag (`webm (vp8, vp9)` or `mp4 (h.264)`)
+- Stream video torrents into a `<video>` tag (`webm, mkv, mp4, ogv, mov, etc (AV1, H264, HEVC*, VP8, VP9, AAC, FLAC, MP3, OPUS, Vorbis, etc)`)
 - Supports Chrome, Firefox, Opera and Safari.
 
-<p align="center">
+<!-- <p align="center">
   <a href="https://saucelabs.com/u/webtorrent">
     <img src="https://saucelabs.com/browser-matrix/webtorrent.svg" alt="Sauce Labs">
   </a>
-</p>
+</p> -->
 
 ### Install
 
-To install WebTorrent for use in node or the browser with `require('webtorrent')`, run:
+To install WebTorrent for use in node or the browser with `import WebTorrent from 'webtorrent'`, run:
 
 ```bash
 npm install webtorrent
@@ -132,34 +133,32 @@ standards (no plugins, just HTML5 and WebRTC)! It's easy to get started!
 ##### Downloading a file is simple:
 
 ```js
-var WebTorrent = require('webtorrent')
+import WebTorrent from 'webtorrent'
 
-var client = new WebTorrent()
-var magnetURI = '...'
+const client = new WebTorrent()
+const magnetURI = '...'
 
-client.add(magnetURI, function (torrent) {
+client.add(magnetURI, torrent => {
   // Got torrent metadata!
   console.log('Client is downloading:', torrent.infoHash)
 
-  torrent.files.forEach(function (file) {
-    // Display the file by appending it to the DOM. Supports video, audio, images, and
-    // more. Specify a container element (CSS selector or reference to DOM node).
-    file.appendTo('body')
-  })
+  for (const file of torrent.files) {
+    document.body.append(file.name)
+  }
 })
 ```
 
 ##### Seeding a file is simple, too:
 
 ```js
-var dragDrop = require('drag-drop')
-var WebTorrent = require('webtorrent')
+import dragDrop from 'drag-drop'
+import WebTorrent from 'webtorrent'
 
-var client = new WebTorrent()
+const client = new WebTorrent()
 
 // When user drops files on the browser, create a new torrent and start seeding it!
-dragDrop('body', function (files) {
-  client.seed(files, function (torrent) {
+dragDrop('body', files => {
+  client.seed(files, torrent => {
     console.log('Client is seeding:', torrent.infoHash)
   })
 })
@@ -175,19 +174,11 @@ you use [node](http://nodejs.org/)-style require() to organize your browser code
 ##### Webpack
 
 WebTorrent also works with [webpack](https://webpack.js.org/), another module
-bundler. However, webpack requires the following extra configuration:
+bundler. However, webpack requires extra configuration which you can find in [the webpack bundle config used by webtorrent](/scripts/browser.webpack.js).
 
-```js
-{
-  target: 'web',
-  node: {
-    fs: 'empty'
-  }
-}
-```
 
 Or, you can just use the pre-built version via
-`require('webtorrent/webtorrent.min.js')` and skip the webpack configuration.
+`import WebTorrent from 'webtorrent/dist/webtorrent.min.js'` and skip the webpack configuration.
 
 ##### Script tag
 
@@ -196,14 +187,17 @@ WebTorrent is also available as a standalone script
 object, so it can be used with just a script tag:
 
 ```html
-<script src="webtorrent.min.js"></script>
+<script type='module'>
+  import WebTorrent from 'webtorrent.min.js'
+</script>
 ```
 
-The WebTorrent script is also hosted on fast, reliable CDN infrastructure (Cloudflare and
-MaxCDN) for easy inclusion on your site:
+The WebTorrent script is also hosted on fast, reliable CDN infrastructure for easy inclusion on your site:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/webtorrent@latest/webtorrent.min.js"></script>
+<script type='module'>
+  import WebTorrent from 'https://esm.sh/webtorrent/dist/webtorrent.min.js'
+</script>
 ```
 
 ##### Chrome App
@@ -213,7 +207,9 @@ If you want to use WebTorrent in a
 following script:
 
 ```html
-<script src="webtorrent.chromeapp.js"></script>
+<script type='module'>
+  import WebTorrent from 'webtorrent.chromeapp.js'
+</script>
 ```
 
 Be sure to enable the `chrome.sockets.udp` and `chrome.sockets.tcp` permissions!
@@ -281,7 +277,7 @@ In addition to magnet uris, WebTorrent supports [many ways](docs/api.md#clientad
 
 Most of the active development is happening inside of small npm packages which are used by WebTorrent.
 
-#### The Node Way&trade;
+#### The Node Way™
 
 > "When applications are done well, they are just the really application-specific, brackish residue that can't be so easily abstracted away. All the nice, reusable components sublimate away onto github and npm where everybody can collaborate to advance the commons." — substack from ["how I write modules"](https://gist.github.com/substack/5075355)
 
@@ -298,92 +294,86 @@ These are the main modules that make up WebTorrent:
 | [bittorrent-peerid][bittorrent-peerid] | [![][bittorrent-peerid-ti]][bittorrent-peerid-tu] | [![][bittorrent-peerid-ni]][bittorrent-peerid-nu] | identify client name/version
 | [bittorrent-protocol][bittorrent-protocol] | [![][bittorrent-protocol-ti]][bittorrent-protocol-tu] | [![][bittorrent-protocol-ni]][bittorrent-protocol-nu] | bittorrent protocol stream
 | [bittorrent-tracker][bittorrent-tracker] | [![][bittorrent-tracker-ti]][bittorrent-tracker-tu] | [![][bittorrent-tracker-ni]][bittorrent-tracker-nu] | bittorrent tracker server/client
-| [bittorrent-lsd][bittorrent-lsd] | [![][bittorrent-lsd-ti]][bittorrent-lsd-tu]] | [![][bittorrent-lsd-ni]][bittorrent-lsd-nu] | bittorrent local service discovery
+| [bittorrent-lsd][bittorrent-lsd] | [![][bittorrent-lsd-ti]][bittorrent-lsd-tu] | [![][bittorrent-lsd-ni]][bittorrent-lsd-nu] | bittorrent local service discovery
 | [create-torrent][create-torrent] | [![][create-torrent-ti]][create-torrent-tu] | [![][create-torrent-ni]][create-torrent-nu] | create .torrent files
 | [magnet-uri][magnet-uri] | [![][magnet-uri-ti]][magnet-uri-tu] | [![][magnet-uri-ni]][magnet-uri-nu] | parse magnet uris
 | [parse-torrent][parse-torrent] | [![][parse-torrent-ti]][parse-torrent-tu] | [![][parse-torrent-ni]][parse-torrent-nu] | parse torrent identifiers
-| [render-media][render-media] | [![][render-media-ti]][render-media-tu] | [![][render-media-ni]][render-media-nu] | intelligently render media files
 | [torrent-discovery][torrent-discovery] | [![][torrent-discovery-ti]][torrent-discovery-tu] | [![][torrent-discovery-ni]][torrent-discovery-nu] | find peers via dht, tracker, and lsd
 | [ut_metadata][ut_metadata] | [![][ut_metadata-ti]][ut_metadata-tu] | [![][ut_metadata-ni]][ut_metadata-nu] | metadata for magnet uris (protocol extension)
 | [ut_pex][ut_pex] | [![][ut_pex-ti]][ut_pex-tu] | [![][ut_pex-ni]][ut_pex-nu] | peer discovery (protocol extension)
 
 [webtorrent]: https://github.com/webtorrent/webtorrent
 [webtorrent-gitter-url]: https://gitter.im/webtorrent/webtorrent
-[webtorrent-ti]: https://img.shields.io/ci/webtorrent/webtorrent/master.svg
-[webtorrent-tu]: https://ci-ci.org/webtorrent/webtorrent
+
+[webtorrent-ti]: https://img.shields.io/github/actions/workflow/status/webtorrent/webtorrent/ci.yml
+[webtorrent-tu]: https://github.com/webtorrent/webtorrent/actions
 [webtorrent-ni]: https://img.shields.io/npm/v/webtorrent.svg
 [webtorrent-nu]: https://www.npmjs.com/package/webtorrent
 [webtorrent-desktop]: https://webtorrent.io/desktop
 
 [bittorrent-dht]: https://github.com/webtorrent/bittorrent-dht
-[bittorrent-dht-ti]: https://img.shields.io/ci/webtorrent/bittorrent-dht/master.svg
-[bittorrent-dht-tu]: https://ci-ci.org/webtorrent/bittorrent-dht
+[bittorrent-dht-ti]: https://img.shields.io/github/actions/workflow/status/webtorrent/bittorrent-dht/ci.yml?branch=master
+[bittorrent-dht-tu]: https://github.com/webtorrent/bittorrent-dht/actions
 [bittorrent-dht-ni]: https://img.shields.io/npm/v/bittorrent-dht.svg
 [bittorrent-dht-nu]: https://www.npmjs.com/package/bittorrent-dht
 
 [bittorrent-peerid]: https://github.com/webtorrent/bittorrent-peerid
-[bittorrent-peerid-ti]: https://img.shields.io/ci/webtorrent/bittorrent-peerid.svg
-[bittorrent-peerid-tu]: https://ci-ci.org/webtorrent/bittorrent-peerid
+[bittorrent-peerid-ti]: https://img.shields.io/github/actions/workflow/status/webtorrent/bittorrent-peerid/ci.yml?branch=master
+[bittorrent-peerid-tu]: https://github.com/webtorrent/bittorrent-peerid/actions
 [bittorrent-peerid-ni]: https://img.shields.io/npm/v/bittorrent-peerid.svg
 [bittorrent-peerid-nu]: https://www.npmjs.com/package/bittorrent-peerid
 
 [bittorrent-protocol]: https://github.com/webtorrent/bittorrent-protocol
-[bittorrent-protocol-ti]: https://img.shields.io/ci/webtorrent/bittorrent-protocol/master.svg
-[bittorrent-protocol-tu]: https://ci-ci.org/webtorrent/bittorrent-protocol
+[bittorrent-protocol-ti]: https://img.shields.io/github/actions/workflow/status/webtorrent/bittorrent-protocol/ci.yml?branch=master
+[bittorrent-protocol-tu]: https://github.com/webtorrent/bittorrent-protocol/actions
 [bittorrent-protocol-ni]: https://img.shields.io/npm/v/bittorrent-protocol.svg
 [bittorrent-protocol-nu]: https://www.npmjs.com/package/bittorrent-protocol
 
 [bittorrent-tracker]: https://github.com/webtorrent/bittorrent-tracker
-[bittorrent-tracker-ti]: https://img.shields.io/ci/webtorrent/bittorrent-tracker/master.svg
-[bittorrent-tracker-tu]: https://ci-ci.org/webtorrent/bittorrent-tracker
+[bittorrent-tracker-ti]: https://img.shields.io/github/actions/workflow/status/webtorrent/bittorrent-tracker/ci.yml?branch=master
+[bittorrent-tracker-tu]: https://github.com/webtorrent/bittorrent-tracker/actions
 [bittorrent-tracker-ni]: https://img.shields.io/npm/v/bittorrent-tracker.svg
 [bittorrent-tracker-nu]: https://www.npmjs.com/package/bittorrent-tracker
 
 [bittorrent-lsd]: https://github.com/webtorrent/bittorrent-lsd
-[bittorrent-lsd-ti]: https://img.shields.io/ci/webtorrent/bittorrent-lsd/master.svg
-[bittorrent-lsd-tu]: https://ci-ci.org/webtorrent/bittorrent-lsd
+[bittorrent-lsd-ti]: https://img.shields.io/github/actions/workflow/status/webtorrent/bittorrent-lsd/ci.yml?branch=master
+[bittorrent-lsd-tu]: https://github.com/webtorrent/bittorrent-lsd/actions
 [bittorrent-lsd-ni]: https://img.shields.io/npm/v/bittorrent-lsd.svg
 [bittorrent-lsd-nu]: https://www.npmjs.com/package/bittorrent-lsd
 
 [create-torrent]: https://github.com/webtorrent/create-torrent
-[create-torrent-ti]: https://img.shields.io/ci/webtorrent/create-torrent/master.svg
-[create-torrent-tu]: https://ci-ci.org/webtorrent/create-torrent
+[create-torrent-ti]: https://img.shields.io/github/actions/workflow/status/webtorrent/create-torrent/ci.yml?branch=master
+[create-torrent-tu]: https://github.com/webtorrent/create-torrent/actions
 [create-torrent-ni]: https://img.shields.io/npm/v/create-torrent.svg
 [create-torrent-nu]: https://www.npmjs.com/package/create-torrent
 
 [magnet-uri]: https://github.com/webtorrent/magnet-uri
-[magnet-uri-ti]: https://img.shields.io/ci/webtorrent/magnet-uri/master.svg
-[magnet-uri-tu]: https://ci-ci.org/webtorrent/magnet-uri
+[magnet-uri-ti]: https://img.shields.io/github/actions/workflow/status/webtorrent/magnet-uri/ci.yml?branch=master
+[magnet-uri-tu]: https://github.com/webtorrent/magnet-uri/actions
 [magnet-uri-ni]: https://img.shields.io/npm/v/magnet-uri.svg
 [magnet-uri-nu]: https://www.npmjs.com/package/magnet-uri
 
 [parse-torrent]: https://github.com/webtorrent/parse-torrent
-[parse-torrent-ti]: https://img.shields.io/ci/webtorrent/parse-torrent/master.svg
-[parse-torrent-tu]: https://ci-ci.org/webtorrent/parse-torrent
+[parse-torrent-ti]: https://img.shields.io/github/actions/workflow/status/webtorrent/parse-torrent/ci.yml?branch=master
+[parse-torrent-tu]: https://github.com/webtorrent/parse-torrent/actions
 [parse-torrent-ni]: https://img.shields.io/npm/v/parse-torrent.svg
 [parse-torrent-nu]: https://www.npmjs.com/package/parse-torrent
 
-[render-media]: https://github.com/feross/render-media
-[render-media-ti]: https://img.shields.io/ci/feross/render-media/master.svg
-[render-media-tu]: https://ci-ci.org/feross/render-media
-[render-media-ni]: https://img.shields.io/npm/v/render-media.svg
-[render-media-nu]: https://www.npmjs.com/package/render-media
-
 [torrent-discovery]: https://github.com/webtorrent/torrent-discovery
-[torrent-discovery-ti]: https://img.shields.io/ci/webtorrent/torrent-discovery/master.svg
-[torrent-discovery-tu]: https://ci-ci.org/webtorrent/torrent-discovery
+[torrent-discovery-ti]: https://img.shields.io/github/actions/workflow/status/webtorrent/torrent-discovery/ci.yml?branch=master
+[torrent-discovery-tu]: https://github.com/webtorrent/torrent-discovery/actions
 [torrent-discovery-ni]: https://img.shields.io/npm/v/torrent-discovery.svg
 [torrent-discovery-nu]: https://www.npmjs.com/package/torrent-discovery
 
 [ut_metadata]: https://github.com/webtorrent/ut_metadata
-[ut_metadata-ti]: https://img.shields.io/ci/webtorrent/ut_metadata/master.svg
-[ut_metadata-tu]: https://ci-ci.org/webtorrent/ut_metadata
+[ut_metadata-ti]: https://img.shields.io/github/actions/workflow/status/webtorrent/ut_metadata/ci.yml?branch=master
+[ut_metadata-tu]: https://github.com/webtorrent/ut_metadata/actions
 [ut_metadata-ni]: https://img.shields.io/npm/v/ut_metadata.svg
 [ut_metadata-nu]: https://www.npmjs.com/package/ut_metadata
 
 [ut_pex]: https://github.com/webtorrent/ut_pex
-[ut_pex-ti]: https://img.shields.io/ci/webtorrent/ut_pex.svg
-[ut_pex-tu]: https://ci-ci.org/webtorrent/ut_pex
+[ut_pex-ti]: https://img.shields.io/github/actions/workflow/status/webtorrent/ut_pex/ci.yml?branch=master
+[ut_pex-tu]: https://github.com/webtorrent/ut_pex/actions
 [ut_pex-ni]: https://img.shields.io/npm/v/ut_pex.svg
 [ut_pex-nu]: https://www.npmjs.com/package/ut_pex
 
@@ -399,7 +389,7 @@ DEBUG=* webtorrent
 In the **browser**, enable debug logs by running this in the developer console:
 
 ```js
-localStorage.debug = '*'
+localStorage.setItem('debug', '*')
 ```
 
 Disable by running this:

@@ -1,48 +1,48 @@
-const DHT = require('bittorrent-dht/server')
-const fixtures = require('webtorrent-fixtures')
-const fs = require('fs')
-const MemoryChunkStore = require('memory-chunk-store')
-const series = require('run-series')
-const test = require('tape')
-const WebTorrent = require('../../')
+import fs from 'fs'
+import { Server as DHT } from 'bittorrent-dht'
+import fixtures from 'webtorrent-fixtures'
+import MemoryChunkStore from 'memory-chunk-store'
+import series from 'run-series'
+import test from 'tape'
+import WebTorrent from '../../index.js'
 
-test('Seed and download a file at the same time', function (t) {
-  t.plan(14)
+test('Seed and download a file at the same time', t => {
+  t.plan(12)
 
   const dhtServer = new DHT({ bootstrap: false })
 
-  dhtServer.on('error', function (err) { t.fail(err) })
-  dhtServer.on('warning', function (err) { t.fail(err) })
+  dhtServer.on('error', err => { t.fail(err) })
+  dhtServer.on('warning', err => { t.fail(err) })
 
   let client1, client2
 
   series([
-    function (cb) {
+    cb => {
       dhtServer.listen(cb)
     },
 
-    function (cb) {
+    cb => {
       let announced = false
       let loaded = false
 
       client1 = new WebTorrent({
         tracker: false,
         lsd: false,
-        dht: { bootstrap: '127.0.0.1:' + dhtServer.address().port }
+        dht: { bootstrap: `127.0.0.1:${dhtServer.address().port}` }
       })
 
-      client1.on('error', function (err) { t.fail(err) })
-      client1.on('warning', function (err) { t.fail(err) })
+      client1.on('error', err => { t.fail(err) })
+      client1.on('warning', err => { t.fail(err) })
 
       const torrent = client1.add(fixtures.leaves.torrent, { store: MemoryChunkStore })
 
-      torrent.on('dhtAnnounce', function () {
+      torrent.on('dhtAnnounce', () => {
         t.pass('client1 finished dht announce')
         announced = true
         maybeDone()
       })
 
-      torrent.load(fs.createReadStream(fixtures.leaves.contentPath), function (err) {
+      torrent.load(fs.createReadStream(fixtures.leaves.contentPath), err => {
         t.error(err, 'client1 started seeding')
         loaded = true
         maybeDone()
@@ -53,28 +53,28 @@ test('Seed and download a file at the same time', function (t) {
       }
     },
 
-    function (cb) {
+    cb => {
       let announced = false
       let loaded = false
 
       client2 = new WebTorrent({
         tracker: false,
         lsd: false,
-        dht: { bootstrap: '127.0.0.1:' + dhtServer.address().port }
+        dht: { bootstrap: `127.0.0.1:${dhtServer.address().port}` }
       })
 
-      client2.on('error', function (err) { t.fail(err) })
-      client2.on('warning', function (err) { t.fail(err) })
+      client2.on('error', err => { t.fail(err) })
+      client2.on('warning', err => { t.fail(err) })
 
       const torrent = client2.add(fixtures.alice.torrent, { store: MemoryChunkStore })
 
-      torrent.on('dhtAnnounce', function () {
+      torrent.on('dhtAnnounce', () => {
         t.pass('client2 finished dht announce')
         announced = true
         maybeDone()
       })
 
-      torrent.load(fs.createReadStream(fixtures.alice.contentPath), function (err) {
+      torrent.load(fs.createReadStream(fixtures.alice.contentPath), err => {
         t.error(err, 'client2 started seeding')
         loaded = true
         maybeDone()
@@ -85,7 +85,7 @@ test('Seed and download a file at the same time', function (t) {
       }
     },
 
-    function (cb) {
+    cb => {
       let gotBuffer1 = false
       let gotBuffer2 = false
       let gotDone1 = false
@@ -93,36 +93,42 @@ test('Seed and download a file at the same time', function (t) {
 
       client1.add(fixtures.alice.magnetURI, { store: MemoryChunkStore })
 
-      client1.on('torrent', function (torrent) {
-        torrent.files[0].getBuffer(function (err, buf) {
-          t.error(err)
-          t.deepEqual(buf, fixtures.alice.content, 'client1 downloaded correct content')
-          gotBuffer1 = true
-          maybeDone()
-        })
-
-        torrent.once('done', function () {
+      client1.on('torrent', async torrent => {
+        torrent.once('done', () => {
           t.pass('client1 downloaded torrent from client2')
           gotDone1 = true
           maybeDone()
         })
+
+        try {
+          const ab = await torrent.files[0].arrayBuffer()
+          t.deepEqual(new Uint8Array(ab), new Uint8Array(fixtures.alice.content), 'client1 downloaded correct content')
+        } catch (err) {
+          t.error(err)
+        }
+
+        gotBuffer1 = true
+        maybeDone()
       })
 
       client2.add(fixtures.leaves.magnetURI, { store: MemoryChunkStore })
 
-      client2.on('torrent', function (torrent) {
-        torrent.files[0].getBuffer(function (err, buf) {
-          t.error(err)
-          t.deepEqual(buf, fixtures.leaves.content, 'client2 downloaded correct content')
-          gotBuffer2 = true
-          maybeDone()
-        })
-
-        torrent.once('done', function () {
+      client2.on('torrent', async torrent => {
+        torrent.once('done', () => {
           t.pass('client2 downloaded torrent from client1')
           gotDone2 = true
           maybeDone()
         })
+
+        try {
+          const ab = await torrent.files[0].arrayBuffer()
+          t.deepEqual(new Uint8Array(ab), new Uint8Array(fixtures.leaves.content), 'client1 downloaded correct content')
+        } catch (err) {
+          t.error(err)
+        }
+
+        gotBuffer2 = true
+        maybeDone()
       })
 
       function maybeDone () {
@@ -130,16 +136,16 @@ test('Seed and download a file at the same time', function (t) {
       }
     }
 
-  ], function (err) {
+  ], err => {
     t.error(err)
 
-    client1.destroy(function (err) {
+    client1.destroy(err => {
       t.error(err, 'client1 destroyed')
     })
-    client2.destroy(function (err) {
+    client2.destroy(err => {
       t.error(err, 'client2 destroyed')
     })
-    dhtServer.destroy(function (err) {
+    dhtServer.destroy(err => {
       t.error(err, 'dht server destroyed')
     })
   })
